@@ -76,7 +76,6 @@ type CreateSubmissionRequest struct {
 	PlantConditions   []string          `json:"plant_conditions"`
 	TraitMeasurements TraitMeasurements `json:"trait_measurements"`
 	Notes             string            `json:"notes"`
-	Images            []string          `json:"images"` // URLs to uploaded images
 	ObserverName      string            `json:"observer_name" binding:"required"`
 	Images            []string          `json:"images"`
 }
