@@ -12,9 +12,10 @@ import {
   X,
   Loader,
 } from "lucide-react";
-import InputField, { TextInput, TextArea, Checkbox } from "./common/InputField";
+import InputField, { TextInput, TextArea, Checkbox, Select } from "./common/InputField";
 import Button from "./common/Button";
 import apiService from "../services/apiService";
+import { useLocations } from "../hooks/useLocations";
 
 /**
  * Growth Stage Selector Component
@@ -183,6 +184,8 @@ const MonitoringForm = ({
   showToast,
   onSubmissionSuccess,
 }) => {
+ const {locations} = useLocations()
+ console.log(locations)
   // Form state
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split("T")[0], // Today's date
@@ -402,7 +405,8 @@ const MonitoringForm = ({
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
       <div className="px-4 py-6 text-white bg-gradient-to-r from-green-600 to-green-700">
-        <div className="flex items-center justify-between">
+       <div className="container mx-auto">
+         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold">Rice Field Monitor</h1>
             <p className="text-sm text-green-100">Data Collection Form</p>
@@ -415,10 +419,12 @@ const MonitoringForm = ({
             <LogOut className="w-5 h-5 text-green-100" />
           </button>
         </div>
+       </div>
       </div>
 
       {/* Form Content */}
-      <form onSubmit={handleSubmit} className="flex-1 p-4 pb-20">
+      <div className="container mx-auto">
+ <form onSubmit={handleSubmit} className="flex-1 p-4 pb-20">
         {/* Date of Observation */}
         <InputField
           label="Date of Observation"
@@ -437,18 +443,22 @@ const MonitoringForm = ({
 
         {/* Location */}
         <InputField
-          label="Location of Field"
-          icon={MapPin}
-          required
-          error={errors.location}
-        >
-          <TextInput
-            placeholder="Enter field location or plot number"
-            value={formData.location}
-            onChange={(e) => handleInputChange("location", e.target.value)}
-            error={errors.location}
-          />
-        </InputField>
+      label="Location of Field"
+      icon={MapPin}
+      required
+      error={errors.location}
+    >
+      <Select
+        value={formData.location}
+        onChange={(e) => handleInputChange("location", e.target.value)}
+        options={locations.map(loc => ({
+          value: loc.name,
+          label: loc.name
+        }))}
+        placeholder="Select field location"
+        error={errors.location}
+      />
+    </InputField>
 
         {/* Growth Stage */}
         <InputField
@@ -590,6 +600,8 @@ const MonitoringForm = ({
           Submit Observation
         </Button>
       </form>
+      </div>
+     
     </div>
   );
 };
