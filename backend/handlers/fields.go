@@ -31,16 +31,8 @@ func NewFieldHandler(firestoreService *services.FirestoreService) *FieldHandler 
 // @Failure 500 {object} models.ErrorResponse
 // @Router /fields [get]
 func (fh *FieldHandler) GetFields(c *gin.Context) {
-	currentUser, _ := c.Get("user")
-	user := currentUser.(*models.User)
-
 	ctx := fh.firestoreService.Context()
 	query := fh.firestoreService.Fields().Query
-
-	// Filter by owner (non-admin users can only see their fields)
-	if user.Role != "admin" {
-		query = query.Where("owner_id", "==", user.ID)
-	}
 
 	docs, err := query.Documents(ctx).GetAll()
 	if err != nil {

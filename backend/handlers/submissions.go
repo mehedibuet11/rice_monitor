@@ -41,30 +41,27 @@ func (sh *SubmissionHandler) GetSubmissions(c *gin.Context) {
 	currentUser, _ := c.Get("user")
 	user := currentUser.(*models.User)
 
+	fmt.Println(user)
+
 	// Parse query parameters
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
 	status := c.Query("status")
-	fieldID := c.Query("field_id")
 
 	ctx := sh.firestoreService.Context()
 	query := sh.firestoreService.Submissions().Query
 
-	// Filter by user (non-admin users can only see their submissions)
+	fmt.Printf("Retrieving submissions (page %d, limit %d, status %s)\n", page, limit, status)
+
+	fmt.Println(query)
+
+	// // Filter by user (non-admin users can only see their submissions)
 	if user.Role != "admin" {
 		query = query.Where("user_id", "==", user.ID)
 	}
 
-	// Apply filters
-	if status != "" {
-		query = query.Where("status", "==", status)
-	}
-	if fieldID != "" {
-		query = query.Where("field_id", "==", fieldID)
-	}
-
-	// Order by creation date (newest first)
-	query = query.OrderBy("created_at", firestore.Desc)
+	// // Order by creation date (newest first)
+	// query = query.OrderBy("created_at", firestore.Desc)
 
 	// Apply pagination
 	if page > 1 {
@@ -83,12 +80,16 @@ func (sh *SubmissionHandler) GetSubmissions(c *gin.Context) {
 		return
 	}
 
+	fmt.Printf("Retrieved %d submissions\n", len(docs))
+
 	var submissionsResponse []models.SubmissionResponse
 	for _, doc := range docs {
 		var submission models.Submission
 		doc.DataTo(&submission)
 
-		fieldDoc, err := sh.firestoreService.Fields().Doc(fieldID).Get(ctx)
+		fieldDoc, err := sh.firestoreService.Fields().Doc(submission.FieldID).Get(ctx)
+
+		fmt.Println(fieldDoc)
 
 		var field *models.Field
 		if err == nil {

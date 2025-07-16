@@ -5,8 +5,7 @@ const API_BASE_URL =
 class ApiService {
   // Helper method to get auth headers
   getAuthHeaders() {
-    const token = localStorage.getItem("access_token");
-
+    const token = localStorage.getItem("access_token");    
     console.log(token);
     return {
       "Content-Type": "application/json",
