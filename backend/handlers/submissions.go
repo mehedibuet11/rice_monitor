@@ -463,7 +463,7 @@ func (sh *SubmissionHandler) ExportSubmissions(c *gin.Context) {
 	// Write CSV content
 	csvContent := "ID,Date,Location,Growth Stage,Observer,Status\n"
 	for _, s := range submissions {
-		csvContent += fmt.Sprintf("%s,%s,%s,%s,%s,%s\n",
+		csvContent += fmt.Sprintf("%s,%s,%s,%s,%s\n",
 			s.ID, s.Date.Format("2006-01-02"), s.GrowthStage, s.ObserverName, s.Status)
 	}
 
