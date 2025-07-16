@@ -23,6 +23,8 @@ type Field struct {
 	ID          string    `json:"id" firestore:"id"`
 	Name        string    `json:"name" firestore:"name"`
 	Location    string    `json:"location" firestore:"location"`
+	RiceVariety    string    `json:"rice_variety" firestore:"rice_variety"`
+	TentativeDate    string    `json:"tentative_date" firestore:"tentative_date"`
 	Coordinates Location  `json:"coordinates" firestore:"coordinates"`
 	Area        float64   `json:"area" firestore:"area"` // in hectares
 	OwnerID     string    `json:"owner_id" firestore:"owner_id"`
@@ -41,6 +43,7 @@ type Submission struct {
 	ID                string            `json:"id" firestore:"id"`
 	UserID            string            `json:"user_id" firestore:"user_id"`
 	FieldID           string            `json:"field_id" firestore:"field_id"`
+	Field             Field             `json:"field" firestore:"field"`
 	Date              time.Time         `json:"date" firestore:"date"`
 	Location          string            `json:"location" firestore:"location"`
 	GrowthStage       string            `json:"growth_stage" firestore:"growth_stage"`
@@ -73,6 +76,7 @@ type CreateSubmissionRequest struct {
 	PlantConditions   []string          `json:"plant_conditions"`
 	TraitMeasurements TraitMeasurements `json:"trait_measurements"`
 	Notes             string            `json:"notes"`
+	Images            []string          `json:"images"` // URLs to uploaded images
 	ObserverName      string            `json:"observer_name" binding:"required"`
 }
 
@@ -90,6 +94,8 @@ type UpdateSubmissionRequest struct {
 type CreateFieldRequest struct {
 	Name        string   `json:"name" binding:"required"`
 	Location    string   `json:"location" binding:"required"`
+	RiceVariety    string   `json:"rice_variety" `
+	TentativeDate    string   `json:"tentative_date"`
 	Coordinates Location `json:"coordinates"`
 	Area        float64  `json:"area"`
 }
