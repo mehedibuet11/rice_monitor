@@ -45,7 +45,6 @@ type Submission struct {
 	FieldID           string            `json:"field_id" firestore:"field_id"`
 	Field             Field             `json:"field" firestore:"field"`
 	Date              time.Time         `json:"date" firestore:"date"`
-	Location          string            `json:"location" firestore:"location"`
 	GrowthStage       string            `json:"growth_stage" firestore:"growth_stage"`
 	PlantConditions   []string          `json:"plant_conditions" firestore:"plant_conditions"`
 	TraitMeasurements TraitMeasurements `json:"trait_measurements" firestore:"trait_measurements"`
@@ -71,7 +70,6 @@ type TraitMeasurements struct {
 type CreateSubmissionRequest struct {
 	FieldID           string            `json:"field_id" binding:"required"`
 	Date              time.Time         `json:"date" binding:"required"`
-	Location          string            `json:"location" binding:"required"`
 	GrowthStage       string            `json:"growth_stage" binding:"required"`
 	PlantConditions   []string          `json:"plant_conditions"`
 	TraitMeasurements TraitMeasurements `json:"trait_measurements"`

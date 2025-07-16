@@ -130,7 +130,6 @@ func (sh *SubmissionHandler) CreateSubmission(c *gin.Context) {
 		UserID:            user.ID,
 		FieldID:           req.FieldID,
 		Date:              req.Date,
-		Location:          req.Location,
 		GrowthStage:       req.GrowthStage,
 		PlantConditions:   req.PlantConditions,
 		TraitMeasurements: req.TraitMeasurements,
