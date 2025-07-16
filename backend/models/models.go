@@ -43,7 +43,7 @@ type Submission struct {
 	ID                string            `json:"id" firestore:"id"`
 	UserID            string            `json:"user_id" firestore:"user_id"`
 	FieldID           string            `json:"field_id" firestore:"field_id"`
-	Field             Field             `json:"field" firestore:"field"`
+	Field             []string          `json:"field" firestore:"field"`
 	Date              time.Time         `json:"date" firestore:"date"`
 	GrowthStage       string            `json:"growth_stage" firestore:"growth_stage"`
 	PlantConditions   []string          `json:"plant_conditions" firestore:"plant_conditions"`
@@ -87,7 +87,22 @@ type UpdateSubmissionRequest struct {
 	Notes             *string            `json:"notes,omitempty"`
 	Status            *string            `json:"status,omitempty"`
 }
-
+type SubmissionResponse struct {
+	ID                string            `json:"id"`
+	UserID            string            `json:"user_id"`
+	FieldID           string            `json:"field_id"`
+	Field             Field             `json:"field" `
+	Date              time.Time         `json:"date"`
+	GrowthStage       string            `json:"growth_stage"`
+	PlantConditions   []string          `json:"plant_conditions"`
+	TraitMeasurements TraitMeasurements `json:"trait_measurements"`
+	Notes             string            `json:"notes"`
+	ObserverName      string            `json:"observer_name"`
+	Images            []string          `json:"images"` // URLs to uploaded images
+	Status            string            `json:"status"` // submitted, under_review, approved, rejected
+	CreatedAt         time.Time         `json:"created_at"`
+	UpdatedAt         time.Time         `json:"updated_at"`
+}
 // CreateFieldRequest represents the request payload for creating fields
 type CreateFieldRequest struct {
 	Name        string   `json:"name" binding:"required"`
