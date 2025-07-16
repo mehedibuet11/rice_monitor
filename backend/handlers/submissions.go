@@ -3,13 +3,11 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"strconv"
-	"time"
-
-	"rice-monitor-api/handlers"
 	"rice-monitor-api/models"
 	"rice-monitor-api/services"
 	"rice-monitor-api/utils"
+	"strconv"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	"github.com/gin-gonic/gin"
@@ -126,13 +124,13 @@ func (sh *SubmissionHandler) CreateSubmission(c *gin.Context) {
 	currentUser, _ := c.Get("user")
 	user := currentUser.(*models.User)
 
-	field, _ := handlers.FieldHandler.getFieldByID(req.FieldID)
+	field, _ := sh.firestoreService.Fields().Doc(req.FieldID).Get(sh.firestoreService.Context())
 
 	submission := &models.Submission{
 		ID:                utils.GenerateID(),
 		UserID:            user.ID,
 		FieldID:           req.FieldID,
-		Field: 		       field,
+		Field: 		       field.Data(),
 		Date:              req.Date,
 		GrowthStage:       req.GrowthStage,
 		PlantConditions:   req.PlantConditions,
