@@ -74,6 +74,7 @@ type CreateSubmissionRequest struct {
 	TraitMeasurements TraitMeasurements `json:"trait_measurements"`
 	Notes             string            `json:"notes"`
 	ObserverName      string            `json:"observer_name" binding:"required"`
+	Images            []string          `json:"images"`
 }
 
 // UpdateSubmissionRequest represents the request payload for updating submissions

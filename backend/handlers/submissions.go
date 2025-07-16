@@ -136,7 +136,7 @@ func (sh *SubmissionHandler) CreateSubmission(c *gin.Context) {
 		TraitMeasurements: req.TraitMeasurements,
 		Notes:             req.Notes,
 		ObserverName:      req.ObserverName,
-		Images:            []string{}, // Will be populated when images are uploaded
+		Images:            req.Images,
 		Status:            "submitted",
 		CreatedAt:         time.Now(),
 		UpdatedAt:         time.Now(),

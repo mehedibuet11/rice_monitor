@@ -360,6 +360,7 @@ const MonitoringForm = ({
         },
         notes: formData.notes.trim(),
         observer_name: currentUser?.name || currentUser?.email || "Unknown",
+        images:formData.images
       };
 
       const response = await apiService.createSubmission(submissionData);
@@ -452,8 +453,8 @@ const MonitoringForm = ({
         value={formData.location}
         onChange={(e) => handleInputChange("location", e.target.value)}
         options={locations.map(loc => ({
-          value: loc.name,
-          label: loc.name
+          value: loc.id,
+          label: `${loc.name} (${loc.location})`
         }))}
         placeholder="Select field location"
         error={errors.location}
