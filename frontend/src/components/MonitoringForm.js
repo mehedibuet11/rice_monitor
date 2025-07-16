@@ -344,7 +344,7 @@ const MonitoringForm = ({
     setLoading(true);
     try {
       const submissionData = {
-        field_id: "default", // You might want to implement field selection
+        field_id: formData.location.trim(), // You might want to implement field selection
         date: new Date(formData.date).toISOString(),
         location: formData.location.trim(),
         growth_stage: formData.growthStage,
