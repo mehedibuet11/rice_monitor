@@ -210,6 +210,7 @@ class ApiService {
     return this.handleResponse(response);
   }
 
+
   // User methods
   async getUser(id) {
     const response = await fetch(`${API_BASE_URL}/users/${id}`, {
@@ -226,6 +227,7 @@ class ApiService {
     });
     return this.handleResponse(response);
   }
+
 
   async deleteUser(id) {
     const response = await fetch(`${API_BASE_URL}/users/${id}`, {

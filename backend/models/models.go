@@ -78,6 +78,7 @@ type CreateSubmissionRequest struct {
 	Notes             string            `json:"notes"`
 	Images            []string          `json:"images"` // URLs to uploaded images
 	ObserverName      string            `json:"observer_name" binding:"required"`
+	Images            []string          `json:"images"`
 }
 
 // UpdateSubmissionRequest represents the request payload for updating submissions
