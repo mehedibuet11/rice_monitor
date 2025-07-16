@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -14,8 +13,6 @@ import (
 	"cloud.google.com/go/firestore"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/iterator"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type SubmissionHandler struct {
@@ -26,22 +23,6 @@ func NewSubmissionHandler(firestoreService *services.FirestoreService) *Submissi
 	return &SubmissionHandler{
 		firestoreService: firestoreService,
 	}
-}
-
-func (sh *SubmissionHandler) getFieldByID(ctx context.Context, fieldID string) (*models.Field, error) {
-	doc, err := sh.firestoreService.Fields().Doc(fieldID).Get(ctx)
-	if err != nil {
-		if status.Code(err) == codes.NotFound {
-			return nil, fmt.Errorf("field not found: %s", fieldID)
-		}
-		return nil, fmt.Errorf("failed to get field: %w", err)
-	}
-
-	var field models.Field
-	if err := doc.DataTo(&field); err != nil {
-		return nil, fmt.Errorf("failed to parse field data: %w", err)
-	}
-	return &field, nil
 }
 
 // @Summary Get all submissions
@@ -107,7 +88,14 @@ func (sh *SubmissionHandler) GetSubmissions(c *gin.Context) {
 		var submission models.Submission
 		doc.DataTo(&submission)
 
-		field, err := sh.getFieldByID(ctx, submission.FieldID)
+		fieldDoc, err := sh.firestoreService.Fields().Doc(fieldID).Get(ctx)
+
+		var field *models.Field
+		if err == nil {
+			field = &models.Field{}
+			fieldDoc.DataTo(field)
+		}
+
 		if err != nil {
 			fmt.Printf("Failed to get field for submission %s: %v\n", submission.ID, err)
 			// Optionally, you can skip this submission or return an error
@@ -231,42 +219,49 @@ func (sh *SubmissionHandler) GetSubmission(c *gin.Context) {
 	// Check if user can access this submission
 	if user.Role != "admin" && submission.UserID != user.ID {
 		c.JSON(http.StatusForbidden, models.ErrorResponse{
-			Error:	"forbidden",
+			Error:   "forbidden",
 			Message: "Access denied",
 		})
 		return
 	}
 
-	field, err := sh.getFieldByID(ctx, submission.FieldID)
+	field_doc, err := sh.firestoreService.Fields().Doc(submission.FieldID).Get(ctx)
+
+	var field *models.Field
+	if err == nil {
+		field = &models.Field{}
+		field_doc.DataTo(field)
+	}
+
 	if err != nil {
 		fmt.Printf("Failed to get field for submission %s: %v\n", submission.ID, err)
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error:	"internal_error",
+			Error:   "internal_error",
 			Message: "Failed to retrieve associated field data",
 		})
 		return
 	}
 
 	submissionResponse := models.SubmissionResponse{
-		ID:				submission.ID,
-		UserID:			submission.UserID,
-		FieldID:			submission.FieldID,
-		Field:			*field,
-		Date:				submission.Date,
-		GrowthStage:		submission.GrowthStage,
-		PlantConditions:	submission.PlantConditions,
-		TraitMeasurements:	submission.TraitMeasurements,
-		Notes:				submission.Notes,
-		ObserverName:		submission.ObserverName,
-		Images:				submission.Images,
-		Status:				submission.Status,
-		CreatedAt:			submission.CreatedAt,
-		UpdatedAt:			submission.UpdatedAt,
+		ID:                submission.ID,
+		UserID:            submission.UserID,
+		FieldID:           submission.FieldID,
+		Field:             *field,
+		Date:              submission.Date,
+		GrowthStage:       submission.GrowthStage,
+		PlantConditions:   submission.PlantConditions,
+		TraitMeasurements: submission.TraitMeasurements,
+		Notes:             submission.Notes,
+		ObserverName:      submission.ObserverName,
+		Images:            submission.Images,
+		Status:            submission.Status,
+		CreatedAt:         submission.CreatedAt,
+		UpdatedAt:         submission.UpdatedAt,
 	}
 
 	c.JSON(http.StatusOK, models.SuccessResponse{
 		Success: true,
-		Data:		submissionResponse,
+		Data:    submissionResponse,
 	})
 }
 

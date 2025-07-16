@@ -43,7 +43,6 @@ type Submission struct {
 	ID                string            `json:"id" firestore:"id"`
 	UserID            string            `json:"user_id" firestore:"user_id"`
 	FieldID           string            `json:"field_id" firestore:"field_id"`
-	Field             []string          `json:"field" firestore:"field"`
 	Date              time.Time         `json:"date" firestore:"date"`
 	GrowthStage       string            `json:"growth_stage" firestore:"growth_stage"`
 	PlantConditions   []string          `json:"plant_conditions" firestore:"plant_conditions"`
