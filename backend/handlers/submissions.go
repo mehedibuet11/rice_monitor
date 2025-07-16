@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"rice-monitor-api/handlers"
 	"rice-monitor-api/models"
 	"rice-monitor-api/services"
 	"rice-monitor-api/utils"
@@ -125,10 +126,13 @@ func (sh *SubmissionHandler) CreateSubmission(c *gin.Context) {
 	currentUser, _ := c.Get("user")
 	user := currentUser.(*models.User)
 
+	field, _ := handlers.FieldHandler.getFieldByID(req.FieldID)
+
 	submission := &models.Submission{
 		ID:                utils.GenerateID(),
 		UserID:            user.ID,
 		FieldID:           req.FieldID,
+		Field: 		       field,
 		Date:              req.Date,
 		GrowthStage:       req.GrowthStage,
 		PlantConditions:   req.PlantConditions,
@@ -399,7 +403,7 @@ func (sh *SubmissionHandler) ExportSubmissions(c *gin.Context) {
 	csvContent := "ID,Date,Location,Growth Stage,Observer,Status\n"
 	for _, s := range submissions {
 		csvContent += fmt.Sprintf("%s,%s,%s,%s,%s,%s\n",
-			s.ID, s.Date.Format("2006-01-02"), s.Location, s.GrowthStage, s.ObserverName, s.Status)
+			s.ID, s.Date.Format("2006-01-02"), s.GrowthStage, s.ObserverName, s.Status)
 	}
 
 	c.String(http.StatusOK, csvContent)
