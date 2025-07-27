@@ -1,0 +1,40 @@
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    dir: 'backend'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/aicoexist-446217/aisense-repo/rice_monitor_api'
+      - '.'
+
+  # Step 2: Push Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/aicoexist-446217/aisense-repo/rice_monitor_api'
+
+  # ✅ Step 3: Deploy to Cloud Run with secure configuration
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    dir: 'backend'
+    args:
+      - '-c'
+      - |
+        echo "🚀 Deploying to Cloud Run..."
+        gcloud run deploy rice-monitor-api \
+          --image=us-central1-docker.pkg.dev/aicoexist-446217/aisense-repo/rice_monitor_api \
+          --platform=managed \
+          --region=us-central1 \
+          --port=8989 \
+          --service-account=rice-field-monitor@aicoexist-446217.iam.gserviceaccount.com \
+          --project=aicoexist-446217 \
+          --allow-unauthenticated \
+          --timeout=500s \
+          --set-env-vars="SERVICE_ACCOUNT=rice-field-monitor@aicoexist-446217.iam.gserviceaccount.com,GOOGLE_CLOUD_PROJECT=aicoexist-446217,STORAGE_BUCKET=rice_monitor,GIN_MODE=debug,ENVIRONMENT=development,JWT_SECRET=a15c7d5ee853ceec6a7a7d4712313dc2,GOOGLE_CLIENT_ID=427992046730-96pcouhg8anuib12t4ldi3n75etrdbcl.apps.googleusercontent.com,GOOGLE_API_KEY=AIzaSyAab8i2_H9gkqkWD4YAjQ1Qf6pZ7ouw664" 
+
+images:
+  - 'us-central1-docker.pkg.dev/aicoexist-446217/aisense-repo/rice_monitor_api'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
